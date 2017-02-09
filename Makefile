@@ -5,8 +5,8 @@ LDFLAGS =
 OBJ = frameio.o
 EXEC = main
 
-%.o: %.c %.h
-	$(CC) -c $(CFLAGS) -o $@ $<
+%.o: %.c
+	$(CC) -c $< $(CFLAGS) -o $@
 
 $(EXEC): main.c $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
