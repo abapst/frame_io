@@ -13,7 +13,7 @@ FILE* fio_OpenReadStream(const char *filename);
 FILE* fio_OpenWriteStream(const char* filename,int rows,int cols);
 
 void fio_WriteFrame(rgb *binframe, FILE *out);
-rgb *fio_ReadFrame(rgb *binframe, FILE *in);
+int fio_ReadFrame(rgb *binframe, FILE *in);
 
 void fio_CloseReadStream(FILE* in);
 void fio_CloseWriteStream(FILE* out);

@@ -5,20 +5,21 @@
 
 int main(int argc, char **argv)
 {
-    const char *filename = argv[1];
     int cnt = 0;
-    rgb *binframe = NULL;
+    const char *filename = argv[1];
+    rgb binframe;
+    binframe.data = NULL;
 
     FILE* in = fio_OpenReadStream(filename);
     FILE* out = NULL;
 
     fprintf(stderr,"Reading file %s\n",filename);
-    while((binframe = fio_ReadFrame(binframe,in)) != NULL) {
+    while(fio_ReadFrame(&binframe, in) != -1) {
         fprintf(stderr, "\r(%d)",++cnt);
         if(out == NULL) {
-            out = fio_OpenWriteStream("output.mp4",binframe->h,binframe->w);
+            out = fio_OpenWriteStream("output.mp4",binframe.h,binframe.w);
         }
-        fio_WriteFrame(binframe,out);
+        fio_WriteFrame(&binframe,out);
     }
     fprintf(stderr,"\n");
 

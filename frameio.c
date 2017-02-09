@@ -58,7 +58,7 @@ FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
     return out;
 }
 
-rgb *fio_ReadFrame(rgb *binframe, FILE *in)
+int fio_ReadFrame(rgb *binframe, FILE *in)
 {
     char string[81];
     int width, height;
@@ -75,12 +75,11 @@ rgb *fio_ReadFrame(rgb *binframe, FILE *in)
         sscanf(string,"%d %d", &width, &height);
         fgets(string, 80, in);
         // Allocate frame data if this is the first frame
-        if(binframe == NULL) {
-            binframe = (rgb *)malloc(sizeof(rgb));
+        if(binframe->data == NULL) {
             binframe->data = (unsigned char *)malloc(width*height*3);
             binframe->w = width;
             binframe->h = height;
-            if(binframe == NULL) {
+            if(binframe->data == NULL) {
                 fputs("malloc failed!\n", stderr);
                 exit(-1);
             }
@@ -88,13 +87,12 @@ rgb *fio_ReadFrame(rgb *binframe, FILE *in)
 
         // Read frame
         fread(binframe->data, width*height*3, sizeof(unsigned char), in);
-        return binframe;
+        return 0;
     }
     
     // Nothing more to read
     free(binframe->data);
-    free(binframe);
-    return NULL;
+    return -1;
 }
 
 void fio_WriteFrame(rgb *binframe, FILE *out)
