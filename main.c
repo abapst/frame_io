@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     FILE* out = NULL;
 
     fprintf(stderr,"Reading file %s\n",filename);
-    while(fio_ReadFrame(&binframe, in) != -1) {
+    while(fio_ReadFrame(&binframe, in)) {
         fprintf(stderr, "\r(%d)",++cnt);
         if(out == NULL) {
             out = fio_OpenWriteStream("output.mp4",binframe.h,binframe.w);

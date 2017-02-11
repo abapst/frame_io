@@ -87,12 +87,12 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
 
         // Read frame
         fread(binframe->data, width*height*3, sizeof(unsigned char), in);
-        return 0;
+        return 1;
     }
     
     // Nothing more to read
     free(binframe->data);
-    return -1;
+    return 0;
 }
 
 void fio_WriteFrame(rgb *binframe, FILE *out)
