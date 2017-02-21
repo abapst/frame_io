@@ -6,17 +6,17 @@
 
 #include "frameio.h"
 
-FILE* fio_OpenReadStream(const char* filename)
+FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
 {
     FILE *in = NULL;
 
     char buffer[1024];
 
     // Assemble ffmpeg command
-    snprintf(buffer,sizeof(buffer),"ffmpeg -i %s \
+    snprintf(buffer,sizeof(buffer),"ffmpeg -i %s -vf scale=%d:%d \
                                    -f image2pipe -loglevel quiet \
                                    -hide_banner -vcodec ppm -",\
-                                   filename);
+                                   filename,cols,rows);
 
     in = popen(buffer,"r");
     if (in == NULL){

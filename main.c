@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     rgb binframe;
     binframe.data = NULL;
 
-    FILE* in = fio_OpenReadStream(filename);
+    FILE* in = fio_OpenReadStream(filename,-1,-1);
     FILE* out = NULL;
 
     fprintf(stderr,"Reading file %s\n",filename);

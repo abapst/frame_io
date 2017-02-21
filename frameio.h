@@ -9,7 +9,7 @@ typedef struct _rgb
 } rgb;
 
 // Function declarations
-FILE* fio_OpenReadStream(const char *filename);
+FILE* fio_OpenReadStream(const char *filename,int rows, int cols);
 FILE* fio_OpenWriteStream(const char* filename,int rows,int cols);
 
 void fio_WriteFrame(rgb *binframe, FILE *out);
