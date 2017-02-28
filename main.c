@@ -1,13 +1,12 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "frameio.h"
 
 int main(int argc, char **argv)
 {
     int cnt = 0;
     const char *filename = argv[1];
+    const char *imagename = argv[2];
     rgb binframe;
+    rgb img;
     binframe.data = NULL;
 
     FILE* in = fio_OpenReadStream(filename,-1,-1);
@@ -23,7 +22,13 @@ int main(int argc, char **argv)
     }
     fprintf(stderr,"\n");
 
-    fio_CloseReadStream(in);
-    fio_CloseWriteStream(out);
+    fprintf(stderr,"Reading image %s\n",imagename);
+    fio_imread(imagename,&img,-1,-1);
+    fio_imwrite("output.jpg",&img);
+
+    /* Cleanup */
+    free(img.data);
+    fio_close(in);
+    fio_close(out);
     return 0;
 }

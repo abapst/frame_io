@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <memory.h>
-
 #include "frameio.h"
 
 FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
@@ -69,7 +63,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
         if(strncmp(string, "P6\n", 3)) {
             fprintf(stderr, "Frame reader out of sync. Game over.\n");
             fprintf(stderr, "String was: %s", string);
-            exit(-1);
+            return -1;
         }
         fgets(string, 80, in);
         sscanf(string,"%d %d", &width, &height);
@@ -81,7 +75,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             binframe->h = height;
             if(binframe->data == NULL) {
                 fputs("malloc failed!\n", stderr);
-                exit(-1);
+                return -1;
             }
         }
 
@@ -100,12 +94,25 @@ void fio_WriteFrame(rgb *binframe, FILE *out)
     fwrite(binframe->data,binframe->h*binframe->w*3,sizeof(unsigned char),out);
 }
 
-void fio_CloseReadStream(FILE* in)
+void fio_close(FILE* fd)
 {
-    pclose(in);
+    pclose(fd);
 }
 
-void fio_CloseWriteStream(FILE* out)
+int fio_imread(const char* filename, rgb *binframe, int rows, int cols)
 {
-    pclose(out);
+    FILE* in = fio_OpenReadStream(filename, rows, cols);
+    binframe->data = NULL;
+    if (fio_ReadFrame(binframe, in) == -1) {
+        return -1;
+    }
+    fio_close(in);
+    return 0;
+}
+
+void fio_imwrite(const char* filename, rgb *binframe)
+{
+    FILE* out = fio_OpenWriteStream(filename, binframe->h, binframe->w);
+    fio_WriteFrame(binframe, out);
+    fio_close(out);
 }
