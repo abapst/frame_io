@@ -6,6 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define NCHANNELS 3
+
 typedef struct _rgb
 {
     int w;

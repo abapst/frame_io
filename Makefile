@@ -1,17 +1,26 @@
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -Werror -Wextra -Wfatal-errors -pedantic-errors
 LDFLAGS =
 
-OBJ = frameio.o
-EXEC = main
+OBJ = \
+      frameio.o\
+      imtools.o\
+
+EXEC = \
+	   main\
+       imresize\
+
+all: $(EXEC)
 
 %.o: %.c
 	$(CC) -c $< $(CFLAGS) -o $@
 
-$(EXEC): main.c $(OBJ)
+main: main.c $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-all: $(EXEC)
+imresize: imresize.c $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
 
 .PHONY: clean
 clean:

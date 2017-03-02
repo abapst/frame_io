@@ -1,12 +1,17 @@
 #include "frameio.h"
 
+/*
+ * Open an input stream from a video or image file using ffmpeg.
+ * If rows = -1 or cols = -1, the files are read at their native
+ * height/width in the respective dimension, otherwise the frames 
+ * are scaled accordingly.
+ */
 FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
 {
     FILE *in = NULL;
 
     char buffer[1024];
 
-    // Assemble ffmpeg command
     snprintf(buffer,sizeof(buffer),"ffmpeg -i %s -vf scale=%d:%d \
                                    -f image2pipe -loglevel quiet \
                                    -hide_banner -vcodec ppm -",\
@@ -20,6 +25,9 @@ FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
     return in;
 }
 
+/*
+ * Open an output stream to a video or image file using ffmpeg.
+ */
 FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
 {
 
@@ -29,14 +37,12 @@ FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
     char rows_buffer[8];
     char cols_buffer[8];
 
-    // Release symlinks to filename, if any
+    // Release symlinks to filename, if any.
     unlink(filename);
 
-    // Convert rows and cols to string 
     sprintf(rows_buffer,"%d",rows);
     sprintf(cols_buffer,"%d",cols);
 
-    // Assemble ffmpeg command
     snprintf(buffer,sizeof(buffer),"ffmpeg -f rawvideo \
                                    -framerate 30 -pixel_format rgb24 \
                                    -video_size %s*%s \
@@ -52,6 +58,10 @@ FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
     return out;
 }
 
+/* Read exactly one frame from an open ffmpeg stream. Returns -1
+ * on error, 1 on success, and 0 if there are no more frames to
+ * read.
+ */
 int fio_ReadFrame(rgb *binframe, FILE *in)
 {
     char string[81];
@@ -59,7 +69,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
 
     // Read exactly one PPM formatted frame from input pipe
     while(fgets(string,80,in) != NULL) {
-        // read image header
+        // Read image header
         if(strncmp(string, "P6\n", 3)) {
             fprintf(stderr, "Frame reader out of sync. Game over.\n");
             fprintf(stderr, "String was: %s", string);
@@ -68,6 +78,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
         fgets(string, 80, in);
         sscanf(string,"%d %d", &width, &height);
         fgets(string, 80, in);
+
         // Allocate frame data if this is the first frame
         if(binframe->data == NULL) {
             binframe->data = (unsigned char *)malloc(width*height*3);
@@ -89,16 +100,27 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
     return 0;
 }
 
+/*
+ * Write exactly one frame to an ffmpeg output stream.
+ */
 void fio_WriteFrame(rgb *binframe, FILE *out)
 {
     fwrite(binframe->data,binframe->h*binframe->w*3,sizeof(unsigned char),out);
 }
 
+/*
+ * Close an ffmpeg input/output stream.
+ */
 void fio_close(FILE* fd)
 {
     pclose(fd);
 }
 
+/*
+ * Read a single image using ffmpeg. The image can be read at native size
+ * (rows = -1 or cols = -1) or scaled to a different size using ffmpeg's
+ * scaling option.
+ */
 int fio_imread(const char* filename, rgb *binframe, int rows, int cols)
 {
     FILE* in = fio_OpenReadStream(filename, rows, cols);
@@ -110,6 +132,9 @@ int fio_imread(const char* filename, rgb *binframe, int rows, int cols)
     return 0;
 }
 
+/*
+ * Write a single image to an output file using ffmpeg.
+ */
 void fio_imwrite(const char* filename, rgb *binframe)
 {
     FILE* out = fio_OpenWriteStream(filename, binframe->h, binframe->w);
