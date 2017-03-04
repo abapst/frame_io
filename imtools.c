@@ -14,6 +14,11 @@ void imresize(rgb *input, rgb *output, int hout, int wout, const char *alg)
     output->w = wout;
     output->data = malloc(wout*hout*NCHANNELS);
 
+    /* Just copy the image if the size doesn't change */
+    if (hout == input->h && wout == input->w) {
+        memcpy(output->data,input->data,input->h*input->w*NCHANNELS);
+    }
+
     if (!strcmp(alg,"nearest")) {
         imresize_nearest(input, output, hout, wout);
     }

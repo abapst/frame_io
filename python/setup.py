@@ -33,7 +33,7 @@ if "cleanall" in args:
 
 ext_modules = [Extension(
     name="frameio",
-    sources=["frameio.pyx", "../frameio.c"],
+    sources=["frameio.pyx", "../frameio.c", "../imtools.c"],
         # extra_objects=["fc.o"],  # if you compile fc.cpp separately
     include_dirs = [numpy.get_include()],  # .../site-packages/numpy/core/include
     language="c",
