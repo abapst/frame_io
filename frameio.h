@@ -15,7 +15,7 @@ typedef struct _rgb
     unsigned char *data;
 } rgb;
 
-// Function declarations
+/* Function declarations */
 FILE* fio_OpenReadStream(const char *filename,int rows, int cols);
 FILE* fio_OpenWriteStream(const char* filename,int rows,int cols);
 

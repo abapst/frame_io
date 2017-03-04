@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -Werror -Wextra -Wfatal-errors -pedantic-errors
+CFLAGS = -g -Wall -Wextra -Wfatal-errors -pedantic-errors
 LDFLAGS =
 
 OBJ = \

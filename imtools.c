@@ -1,17 +1,35 @@
 #include "imtools.h"
 
+/*
+ * Image resizing wrapper
+ */
+void imresize(rgb *input, rgb *output, int hout, int wout, const char *alg)
+{
+    if (!hout || !wout) {
+        fprintf(stderr,"imresize: output dimensions can't be 0!");
+        exit(-1);
+    }
+
+    output->h = hout;
+    output->w = wout;
+    output->data = malloc(wout*hout*NCHANNELS);
+
+    if (!strcmp(alg,"nearest")) {
+        imresize_nearest(input, output, hout, wout);
+    }
+    if (!strcmp(alg,"bilinear")) {
+        imresize_bilinear(input, output, hout, wout);
+    }
+}
+
 /* 
  * Image resizing using bilinear interpolation
  */
-void imresize(rgb *input, rgb *output, int hout, int wout)
+void imresize_bilinear(rgb *input, rgb *output, int hout, int wout)
 {
     int ii, jj, kk, x, y, a, b, c, d, index, val;
     int hin = input->h;
     int win = input->w; 
-    
-    output->h = hout;
-    output->w = wout;
-    output->data = malloc(wout*hout*NCHANNELS);
 
     float x_ratio = (float)(win-1)/wout;
     float y_ratio = (float)(hin-1)/hout;
@@ -38,6 +56,32 @@ void imresize(rgb *input, rgb *output, int hout, int wout)
 
                 output->data[ii*wout*NCHANNELS+jj*NCHANNELS+kk] = val;
             }
+        }
+    }
+}
+
+/*
+ * Image resizing using nearest-neighbor interpolation
+ */
+void imresize_nearest(rgb *input, rgb *output, int hout, int wout)
+{
+    int ii, jj, x, y, idx_in, idx_out;
+    int hin = input->h;
+    int win = input->w;
+
+    float x_ratio = (float)win/wout;
+    float y_ratio = (float)hin/hout;
+
+    for (ii = 0; ii < hout; ii++) {
+        for (jj = 0; jj < wout; jj++) {
+            x = (int)(x_ratio*jj);
+            y = (int)(y_ratio*ii);
+            idx_in = y*win*NCHANNELS+x*NCHANNELS;
+            idx_out = ii*wout*NCHANNELS+jj*NCHANNELS;
+
+            output->data[idx_out] = input->data[idx_in];
+            output->data[idx_out+1] = input->data[idx_in+1];
+            output->data[idx_out+2] = input->data[idx_in+2];
         }
     }
 }
