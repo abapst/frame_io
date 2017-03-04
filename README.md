@@ -1,4 +1,4 @@
-## frame_io
+# frame_io
 
 Simple library for doing common image processing tasks like reading/writing video and images, and image resizing. This is a work in progress and I add to it whenever I feel like it.
 
@@ -6,10 +6,7 @@ There is also a python library written using cython. It is a work in progress, m
 
 The main purpose of this library in the was to avoid the hassle of having to install and compile OpenCV to do relatively simple and common image processing tasks. The goal is to provide a very simple API and easy insertion into existing projects. The only requirement is ffmpeg, for reading and writing image and video codecs.
 
-# Installation instructions
-
-Prerequisites:
-  - ffmpeg
+## Installation instructions
 
 Install prerequisites:
 ```
@@ -29,7 +26,7 @@ cd python
 ./build.sh
 ```
 
-# Using python to read an image, double its size, and write it to a new file
+## Using python to read an image, double its size, and write it to a new file
 
 ```python
 import frameio as fio
