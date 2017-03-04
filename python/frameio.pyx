@@ -67,21 +67,26 @@ def imwrite(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, filename):
     c_frame.w = frame.shape[1]
     dec.fio_imwrite(c_filename, &c_frame)
 
-def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, shape=(-1,-1), mode="bilinear"):
+def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, shape=(-1,-1), mode="bilinear"):
     cdef const char *c_mode = mode
     cdef dec.rgb c_in
     cdef dec.rgb c_out
     cdef int rows
     cdef int cols
 
-    if shape[0] == -1:
-        rows = frame.shape[0]
+    if scale != -1:
+        assert scale > 0
+        rows = scale*frame.shape[0]
+        cols = scale*frame.shape[1]
     else:
-        rows = shape[0]
-    if shape[1] == -1:
-        cols = frame.shape[1]
-    else:
-        cols = shape[1]
+        if shape[0] == -1:
+            rows = frame.shape[0]
+        else:
+            rows = shape[0]
+        if shape[1] == -1:
+            cols = frame.shape[1]
+        else:
+            cols = shape[1]
 
     c_in.data = &frame[0,0,0]
     c_in.h = frame.shape[0]

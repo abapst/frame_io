@@ -1,6 +1,6 @@
 ## frame_io
 
-Simple library for doing common image processing tasks like reading/writing video and images, and image resizing. This is a work in progress and I plan to add more functionality over time.
+Simple library for doing common image processing tasks like reading/writing video and images, and image resizing. This is a work in progress and I add to it whenever I feel like it.
 
 There is also a python library written using cython. It is a work in progress, mainly for me to learn cython.
 
@@ -12,28 +12,29 @@ Prerequisites:
   - ffmpeg
 
 Install prerequisites:
-<pre>
+```
 sudo apt-get install ffmpeg
-</pre>
+```
 
 Download the repo and make the examples:
-<pre>
+```
 git clone https://github.com/abapst/frame_io
 cd frame_io
 make
-</pre>
+```
 
 Build the python library (if desired):
-<pre>
+```
 cd python
 ./build.sh
-</pre>
+```
 
-# Using python to read an image, resize it, and write it to a new file
+# Using python to read an image, double its size, and write it to a new file
 
 ```python
 import frameio as fio
+
 img = fio.imread('../test/bear.jpg')
-im_resized = imresize(img,shape=(500,500),mode='bilinear')
-imwrite(im_resized,'bear_resized.jpg')
+im_resized = fio.imresize(img,scale=2,mode='bilinear')
+fio.imwrite(im_resized,'bear_resized.jpg')
 ```
