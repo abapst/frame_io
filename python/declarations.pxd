@@ -2,7 +2,7 @@ from libc.stdlib cimport *
 from libc.stdio cimport *
 from libc.stdint cimport uintptr_t
 
-cdef extern from "../frameio.h":
+cdef extern from "../include/frameio.h":
     cdef struct _rgb:
         int w
         int h
@@ -20,5 +20,5 @@ cdef extern from "../frameio.h":
     int fio_imread(const char *filename, rgb *binframe, int rows, int cols)
     void fio_imwrite(const char *filename, rgb *binframe)
 
-cdef extern from "../imtools.h":
+cdef extern from "../include/imtools.h":
     void imresize(rgb *c_input, rgb *c_output, int hout, int wout, const char *alg);

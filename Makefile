@@ -1,27 +1,44 @@
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Wfatal-errors -pedantic-errors
 LDFLAGS =
+INC=-I./include
+VPATH=src/
+OBJDIR=obj/
+BINDIR=build/
+LIBDIR=lib/
+
+EXEC = \
+	   test\
+       imresize\
 
 OBJ = \
       frameio.o\
       imtools.o\
 
-EXEC = \
-	   main\
-       imresize\
+EXECS=$(addprefix $(BINDIR), $(EXEC))
+OBJS=$(addprefix $(OBJDIR), $(OBJ))
+DEPS=$(wildcard include/*.h) Makefile
 
-all: $(EXEC)
+all: build obj lib $(EXECS)
 
-%.o: %.c
-	$(CC) -c $< $(CFLAGS) -o $@
+$(OBJDIR)%.o: %.c $(DEPS)
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
-main: main.c $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+$(BINDIR)test: src/test.c $(OBJS)
+	$(CC) $(CFLAGS) $(INC) $^ -o $@ $(LDFLAGS)
 
-imresize: imresize.c $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+$(BINDIR)imresize: src/imresize.c $(OBJS)
+	$(CC) $(CFLAGS) $(INC) $^ -o $@ $(LDFLAGS)
 
+obj:
+	mkdir -p $(OBJDIR)
+
+build:
+	mkdir -p $(BINDIR)
+
+lib:
+	mkdir -p $(LIBDIR)
 
 .PHONY: clean
 clean:
-	rm -rf *.o $(EXEC) core.*
+	rm -rf *.o $(BINDIR) $(OBJDIR) $(LIBDIR) core.*

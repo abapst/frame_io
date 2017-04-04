@@ -17,14 +17,10 @@ Download the repo and make the examples:
 ```
 git clone https://github.com/abapst/frame_io
 cd frame_io
-make
-```
-
-Build the python library (if desired):
-```
-cd python
 ./build.sh
 ```
+
+This will build the test examples and the python library. Note that if you want to use the python wrappers system-wide, you will need to add the frame_io/lib location to your PYTHONPATH environment variable.
 
 ## Using python to read an image, double its size, and write it to a new file
 
