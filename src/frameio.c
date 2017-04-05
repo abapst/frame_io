@@ -75,9 +75,18 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             fprintf(stderr, "String was: %s", string);
             return -1;
         }
-        fgets(string, 80, in);
+
+        if(fgets(string, 80, in) == NULL) {
+            fprintf(stderr, "Frame header read error.\n");
+            return -1;
+        }
+
         sscanf(string,"%d %d", &width, &height);
-        fgets(string, 80, in);
+
+        if(fgets(string, 80, in) == NULL) {
+            fprintf(stderr, "Frame header read error.\n");
+            return -1;
+        }
 
         // Allocate frame data if this is the first frame
         if(binframe->data == NULL) {
@@ -91,7 +100,13 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
         }
 
         // Read frame
-        fread(binframe->data, width*height*3, sizeof(unsigned char), in);
+        size_t nbytes;
+        nbytes = fread(binframe->data, sizeof(unsigned char), height*width*3, in);
+        if ((int)nbytes < height*width*3) {
+            fprintf(stderr, "Incorrect number of frame bytes read.\n");
+            return -1;
+        }
+
         return 1;
     }
     
@@ -105,7 +120,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
  */
 void fio_WriteFrame(rgb *binframe, FILE *out)
 {
-    fwrite(binframe->data,binframe->h*binframe->w*3,sizeof(unsigned char),out);
+    fwrite(binframe->data,sizeof(unsigned char),binframe->h*binframe->w*3,out);
 }
 
 /*

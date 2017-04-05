@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     FILE* in = fio_OpenReadStream(filename,100,100);
     FILE* out = NULL;
 
-    fprintf(stderr,"Reading file %s\n",filename);
+    fprintf(stderr,"Reading video %s\n",filename);
     while(fio_ReadFrame(&binframe, in)) {
         fprintf(stderr, "\r(%d)",++cnt);
         if(out == NULL) {
@@ -23,12 +23,12 @@ int main(int argc, char **argv)
         }
         fio_WriteFrame(&binframe,out);
     }
-    fprintf(stderr,"\n");
 
     /* Read an image and write it out output.jpg */
     fprintf(stderr,"Reading image %s\n",imagename);
     fio_imread(imagename,&img,-1,-1);
     fio_imwrite("output.jpg",&img);
+    fprintf(stderr,"Done.\n");
 
     /* Cleanup */
     free(img.data);

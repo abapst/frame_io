@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     rgb resized;
     fio_imread(filename,&img,-1,-1);
     imresize(&img, &resized, scale*img.h, scale*img.w, alg); 
-    fio_imwrite("output.jpg",&resized);
+    fio_imwrite("output.png",&resized);
 
     free(img.data);
     free(resized.data);

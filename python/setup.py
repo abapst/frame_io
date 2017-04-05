@@ -43,7 +43,7 @@ ext_modules = [Extension(
     include_dirs = [numpy.get_include()],  # .../site-packages/numpy/core/include
     language="c",
         # libraries=
-        extra_compile_args = "-I../include".split()
+        extra_compile_args = "-Wno-cpp -I../include".split()
         # extra_link_args = "...".split()
     )]
 
