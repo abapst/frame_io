@@ -19,12 +19,12 @@ typedef struct _rgb
 FILE* fio_OpenReadStream(const char *filename,int rows, int cols);
 FILE* fio_OpenWriteStream(const char* filename,int rows,int cols);
 
-void fio_WriteFrame(rgb *binframe, FILE *out);
 int fio_ReadFrame(rgb *binframe, FILE *in);
+int fio_WriteFrame(rgb *binframe, FILE *out);
 
 void fio_close(FILE* fd);
 
 int fio_imread(const char* filename, rgb *binframe, int rows, int cols);
-void fio_imwrite(const char* filename, rgb *binframe);
+int fio_imwrite(const char* filename, rgb *binframe);
 
 #endif

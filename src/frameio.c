@@ -19,8 +19,8 @@ FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
 
     in = popen(buffer,"r");
     if (in == NULL){
-        fputs("read pipe open failed!\n",stderr);
-        exit(-1); 
+        fprintf(stderr,"fio_OpenReadStream error\n");
+        return NULL;
     }
     return in;
 }
@@ -52,8 +52,8 @@ FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
 
     out = popen(buffer,"w");   
     if (out == NULL){
-        fputs("write pipe open failed!\n",stderr);
-        exit(-1); 
+        fprintf(stderr,"fio_OpenWriteStream error\n");
+        return NULL;
     }
     return out;
 }
@@ -71,20 +71,20 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
     while(fgets(string,80,in) != NULL) {
         // Read image header
         if(strncmp(string, "P6\n", 3)) {
-            fprintf(stderr, "Frame reader out of sync. Game over.\n");
+            fprintf(stderr, "fio_ReadFrame: Incorrect PPM magic number.\n");
             fprintf(stderr, "String was: %s", string);
             return -1;
         }
 
         if(fgets(string, 80, in) == NULL) {
-            fprintf(stderr, "Frame header read error.\n");
+            fprintf(stderr, "fio_ReadFrame: Frame header read error.\n");
             return -1;
         }
 
         sscanf(string,"%d %d", &width, &height);
 
         if(fgets(string, 80, in) == NULL) {
-            fprintf(stderr, "Frame header read error.\n");
+            fprintf(stderr, "fio_ReadFrame: Frame header read error.\n");
             return -1;
         }
 
@@ -94,7 +94,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             binframe->w = width;
             binframe->h = height;
             if(binframe->data == NULL) {
-                fputs("malloc failed!\n", stderr);
+                fprintf(stderr, "fio_ReadFrame: malloc failed!\n");
                 return -1;
             }
         }
@@ -103,7 +103,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
         size_t nbytes;
         nbytes = fread(binframe->data, sizeof(unsigned char), height*width*3, in);
         if ((int)nbytes < height*width*3) {
-            fprintf(stderr, "Incorrect number of frame bytes read.\n");
+            fprintf(stderr, "fio_ReadFrame: fread error.\n");
             return -1;
         }
 
@@ -111,16 +111,26 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
     }
     
     // Nothing more to read
-    free(binframe->data);
     return 0;
 }
 
 /*
  * Write exactly one frame to an ffmpeg output stream.
  */
-void fio_WriteFrame(rgb *binframe, FILE *out)
+int fio_WriteFrame(rgb *binframe, FILE *out)
 {
-    fwrite(binframe->data,sizeof(unsigned char),binframe->h*binframe->w*3,out);
+    size_t nbytes;
+    nbytes = fwrite(binframe->data,\
+                    sizeof(unsigned char),\
+                    binframe->h*binframe->w*3,\
+                    out);
+
+    if ((int)nbytes < binframe->h*binframe->w*3) {
+        fprintf(stderr, "fio_WriteFrame: fwrite error.\n");
+        return -1;
+    }
+
+    return 0;
 }
 
 /*
@@ -150,9 +160,15 @@ int fio_imread(const char* filename, rgb *binframe, int rows, int cols)
 /*
  * Write a single image to an output file using ffmpeg.
  */
-void fio_imwrite(const char* filename, rgb *binframe)
+int fio_imwrite(const char* filename, rgb *binframe)
 {
-    FILE* out = fio_OpenWriteStream(filename, binframe->h, binframe->w);
+    FILE *out;
+    if (NULL == (out = fio_OpenWriteStream(filename,\
+                                   binframe->h,\
+                                   binframe->w))) {
+        return -1;
+    }
     fio_WriteFrame(binframe, out);
     fio_close(out);
+    return 0;
 }

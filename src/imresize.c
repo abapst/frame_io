@@ -4,6 +4,12 @@
 int main(int argc, char **argv)
 {
     (void) argc;
+
+    if (argc != 4) {
+        fprintf(stderr, "Usage: ./imresize <filename> <scale_factor> <algorithm = {'nearest','bilinear'}>\n");
+        return 0;
+    }
+
     float scale;
     const char *filename = argv[1];
     const char *imscale = argv[2];
@@ -18,4 +24,6 @@ int main(int argc, char **argv)
 
     free(img.data);
     free(resized.data);
+
+    return 0;
 }

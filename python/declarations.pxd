@@ -12,13 +12,13 @@ cdef extern from "../include/frameio.h":
     FILE* fio_OpenWriteStream(const char* filename, int rows, int cols)
     FILE* fio_OpenReadStream(const char *filename, int rows, int cols)
 
-    void fio_WriteFrame(rgb *binframe, FILE *fout)
     int fio_ReadFrame(rgb *binframe, FILE *fin)
+    int fio_WriteFrame(rgb *binframe, FILE *fout)
 
     void fio_close(FILE* fout)
 
     int fio_imread(const char *filename, rgb *binframe, int rows, int cols)
-    void fio_imwrite(const char *filename, rgb *binframe)
+    int fio_imwrite(const char *filename, rgb *binframe)
 
 cdef extern from "../include/imtools.h":
     void imresize(rgb *c_input, rgb *c_output, int hout, int wout, const char *alg);

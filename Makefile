@@ -6,9 +6,10 @@ VPATH=src/
 OBJDIR=obj/
 BINDIR=build/
 LIBDIR=lib/
+TESTDIR=test/
 
 EXEC = \
-	   test\
+	   run_tests\
        imresize\
 
 OBJ = \
@@ -24,7 +25,7 @@ all: build obj lib $(EXECS)
 $(OBJDIR)%.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
-$(BINDIR)test: src/test.c $(OBJS)
+$(BINDIR)run_tests: $(TESTDIR)test_driver.c $(OBJS)
 	$(CC) $(CFLAGS) $(INC) $^ -o $@ $(LDFLAGS)
 
 $(BINDIR)imresize: src/imresize.c $(OBJS)
