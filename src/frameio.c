@@ -37,7 +37,7 @@ FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
     char rows_buffer[8];
     char cols_buffer[8];
 
-    // Release symlinks to filename, if any.
+    /* Release symlinks to filename, if any. */
     unlink(filename);
 
     sprintf(rows_buffer,"%d",rows);
@@ -66,10 +66,11 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
 {
     char string[81];
     int width, height;
+    size_t nbytes;
 
-    // Read exactly one PPM formatted frame from input pipe
+    /* Read exactly one PPM formatted frame from input pipe */
     while(fgets(string,80,in) != NULL) {
-        // Read image header
+        /* Read image header */
         if(strncmp(string, "P6\n", 3)) {
             fprintf(stderr, "fio_ReadFrame: Incorrect PPM magic number.\n");
             fprintf(stderr, "String was: %s", string);
@@ -88,7 +89,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             return -1;
         }
 
-        // Allocate frame data if this is the first frame
+        /* Allocate frame data if this is the first frame */
         if(binframe->data == NULL) {
             binframe->data = (unsigned char *)malloc(width*height*3);
             binframe->w = width;
@@ -99,8 +100,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             }
         }
 
-        // Read frame
-        size_t nbytes;
+        /* Read frame */
         nbytes = fread(binframe->data, sizeof(unsigned char), height*width*3, in);
         if ((int)nbytes < height*width*3) {
             fprintf(stderr, "fio_ReadFrame: fread error.\n");
@@ -110,7 +110,7 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
         return 1;
     }
     
-    // Nothing more to read
+    /* Nothing more to read */
     return 0;
 }
 

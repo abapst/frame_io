@@ -7,7 +7,7 @@ python setup.py build_ext --inplace
 python setup.py cleansrc
 cd ..
 
-mv python/frameio.so lib/.
+mv python/*.so lib/frameio.so
 
 if [ $RUN_TESTS -eq 1 ]
 then

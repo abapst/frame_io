@@ -20,7 +20,8 @@ cdef class VideoReader:
         self.c_frame.data = NULL
 
     def open(self, filename, mode, shape=(-1,-1)):
-        cdef const char* c_filename = filename
+        cdef bytes filename_bytes = filename.encode()
+        cdef const char* c_filename = filename_bytes
 
         if mode is 'r':
             self.fin = dec.fio_OpenReadStream(c_filename, shape[0], shape[1])
@@ -50,7 +51,8 @@ cdef class VideoReader:
         dec.fio_WriteFrame(&c_frame, self.fout)
 
 def imread(filename, shape=(-1,-1)):
-    cdef const char *c_filename = filename
+    cdef bytes filename_bytes = filename.encode()
+    cdef const char *c_filename = filename_bytes
     cdef dec.rgb c_frame
     dec.fio_imread(c_filename, &c_frame, shape[0], shape[1])
 
@@ -60,7 +62,8 @@ def imread(filename, shape=(-1,-1)):
     return frame
 
 def imwrite(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, filename):
-    cdef const char *c_filename = filename
+    cdef bytes filename_bytes = filename.encode()
+    cdef const char *c_filename = filename_bytes
     cdef dec.rgb c_frame
     c_frame.data = &frame[0,0,0]
     c_frame.h = frame.shape[0]
@@ -68,7 +71,8 @@ def imwrite(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, filename):
     dec.fio_imwrite(c_filename, &c_frame)
 
 def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, shape=(-1,-1), mode="bilinear"):
-    cdef const char *c_mode = mode
+    cdef bytes mode_bytes = mode.encode()
+    cdef const char *c_mode = mode_bytes
     cdef dec.rgb c_in
     cdef dec.rgb c_out
     cdef int rows

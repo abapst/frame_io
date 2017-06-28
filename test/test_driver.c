@@ -22,8 +22,8 @@ int test_vidread(const char *video_file)
 {
     int cnt = 0;
     rgb binframe = {0,0,NULL};
-    FILE *in;
-    FILE *out;
+    FILE *in = 0;
+    FILE *out = 0;
     if ((in = fio_OpenReadStream(video_file,100,100)) == NULL) {
         return -1;
     }

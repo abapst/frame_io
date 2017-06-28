@@ -28,7 +28,7 @@ if "cleansrc" in args:
     sys.argv[1] = "clean"
 
 if "cleanall" in args:
-    print "Deleting cython files..."
+    print("Deleting cython files...")
     subprocess.Popen("rm -rf build", shell=True, executable="/bin/bash")
     subprocess.Popen("rm -rf *.c", shell=True, executable="/bin/bash")
     subprocess.Popen("rm -rf *.so", shell=True, executable="/bin/bash")
