@@ -20,7 +20,13 @@ cd frame_io
 ./build.sh
 ```
 
-This will build the test examples and the python library. Note that if you want to use the python wrappers system-wide, you will need to add the frame_io/lib location to your PYTHONPATH environment variable.
+This will build the test examples and the python library. Note that if you want to use the python wrappers system-wide, you will need to add the following line to your .bashrc:
+
+```
+# frame_io path
+export PYTHONPATH=<path_to_frame_io>/python:$PYTHONPATH
+```
+where <path_to_frame_io> is the path to the frame_io root.
 
 ## Using python to read an image, double its size, and write it to a new file
 

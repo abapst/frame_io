@@ -5,7 +5,6 @@ INC=-I./include
 VPATH=src/
 OBJDIR=obj/
 BINDIR=build/
-LIBDIR=lib/
 TESTDIR=test/
 
 EXEC = \
@@ -20,7 +19,7 @@ EXECS=$(addprefix $(BINDIR), $(EXEC))
 OBJS=$(addprefix $(OBJDIR), $(OBJ))
 DEPS=$(wildcard include/*.h) Makefile
 
-all: build obj lib $(EXECS)
+all: build obj $(EXECS)
 
 $(OBJDIR)%.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
@@ -37,9 +36,6 @@ obj:
 build:
 	mkdir -p $(BINDIR)
 
-lib:
-	mkdir -p $(LIBDIR)
-
 .PHONY: clean
 clean:
-	rm -rf *.o $(BINDIR) $(OBJDIR) $(LIBDIR) core.*
+	rm -rf *.o python/*.so $(BINDIR) $(OBJDIR) core.*
