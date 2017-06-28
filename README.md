@@ -13,6 +13,9 @@ Install prerequisites:
 sudo apt-get install ffmpeg
 ```
 
+If you are using Ubuntu 14.04, you may need to follow the instructions here in order to install ffmpeg:
+https://www.faqforge.com/linux/how-to-install-ffmpeg-on-ubuntu-14-04/
+
 Download the repo and make the examples:
 ```
 git clone https://github.com/abapst/frame_io
