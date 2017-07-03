@@ -4,7 +4,7 @@ LDFLAGS =
 INC=-I./include
 VPATH=src/
 OBJDIR=obj/
-BINDIR=build/
+BINDIR=bin/
 TESTDIR=test/
 
 EXEC = \
@@ -14,17 +14,18 @@ EXEC = \
 OBJ = \
       frameio.o\
       imtools.o\
+      draw.o\
 
 EXECS=$(addprefix $(BINDIR), $(EXEC))
 OBJS=$(addprefix $(OBJDIR), $(OBJ))
 DEPS=$(wildcard include/*.h) Makefile
 
-all: build obj $(EXECS)
+all: bin obj $(EXECS)
 
 $(OBJDIR)%.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
-$(BINDIR)run_tests: $(TESTDIR)test_driver.c $(OBJS)
+$(BINDIR)run_tests: $(TESTDIR)test.c $(OBJS)
 	$(CC) $(CFLAGS) $(INC) $^ -o $@ $(LDFLAGS)
 
 $(BINDIR)imresize: src/imresize.c $(OBJS)
@@ -33,9 +34,9 @@ $(BINDIR)imresize: src/imresize.c $(OBJS)
 obj:
 	mkdir -p $(OBJDIR)
 
-build:
+bin:
 	mkdir -p $(BINDIR)
 
 .PHONY: clean
 clean:
-	rm -rf *.o python/*.so $(BINDIR) $(OBJDIR) core.*
+	rm -rf *.o python/*.so $(BINDIR) $(OBJDIR) core.* *.mp4 *.jpg

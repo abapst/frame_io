@@ -11,7 +11,7 @@ mv python/*.so python/frameio.so
 
 if [ $RUN_TESTS -eq 1 ]
 then
-    ./build/run_tests
+    ./bin/run_tests
     rm video_out.mp4
     rm image_out.jpg
 fi
