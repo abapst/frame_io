@@ -26,9 +26,9 @@ This will build the test examples and the python library. Note that if you want 
 
 ```
 # frame_io path
-export PYTHONPATH=<root>/python:$PYTHONPATH
+export PYTHONPATH=<dir>/python:$PYTHONPATH
 ```
-where \<root> is the path to the frame_io root.
+where \<dir> is the path to the frame_io root.
 
 ## Using python to read an image, double its size, and write it to a new file
 
