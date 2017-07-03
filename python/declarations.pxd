@@ -22,3 +22,6 @@ cdef extern from "../include/frameio.h":
 
 cdef extern from "../include/imtools.h":
     void imresize(rgb *c_input, rgb *c_output, int hout, int wout, const char *alg);
+
+cdef extern from "../include/draw.h":
+    void draw_box(rgb *im, int x1, int y1, int x2, int y2, int thickness, int r,int g, int b);

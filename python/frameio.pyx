@@ -102,3 +102,25 @@ def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, sh
     data_ptr = c.cast(<uintptr_t>c_out.data, c.POINTER(c.c_uint8))
     frame_resized = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
     return frame_resized
+
+def draw_box(np.ndarray[np.uint8_t,ndim=3,mode="c"] im not None, pt1, pt2, color, thickness=1):
+    cdef dec.rgb c_im
+    cdef int x1 = pt1[0]
+    cdef int y1 = pt1[1]
+    cdef int x2 = pt2[0]
+    cdef int y2 = pt2[1]
+    cdef int r = color[0]
+    cdef int g = color[1]
+    cdef int b = color[2]
+    cdef int t = thickness
+
+    c_im.data = &im[0,0,0]
+    c_im.h = im.shape[0]
+    c_im.w = im.shape[1]
+    
+    dec.draw_box(&c_im,x1,y1,x2,y2,t,r,g,b)
+
+    # convert c buffer to numpy array
+    data_ptr = c.cast(<uintptr_t>c_im.data, c.POINTER(c.c_uint8))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_im.h,c_im.w,3))
+    return im
