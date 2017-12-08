@@ -8,6 +8,7 @@ cimport numpy as np
 
 cimport declarations as dec
 
+
 cdef class VideoReader:
 
     cdef FILE* fin
@@ -37,7 +38,7 @@ cdef class VideoReader:
         assert self.fin != NULL
         cdef int retval;
         retval = dec.fio_ReadFrame(&self.c_frame, self.fin)
-        
+
         # convert c buffer to numpy array
         data_ptr = c.cast(<uintptr_t>self.c_frame.data, c.POINTER(c.c_uint8))
         frame = np.ctypeslib.as_array(data_ptr, shape=(self.c_frame.h,self.c_frame.w,3))
@@ -48,6 +49,7 @@ cdef class VideoReader:
         c_frame.data = &frame[0,0,0]
         c_frame.h = frame.shape[0]
         c_frame.w = frame.shape[1]
+        c_frame.c = 3
         dec.fio_WriteFrame(&c_frame, self.fout)
 
 def imread(filename, shape=(-1,-1)):
@@ -61,6 +63,7 @@ def imread(filename, shape=(-1,-1)):
     frame = np.ctypeslib.as_array(data_ptr, shape=(c_frame.h,c_frame.w,3))
     return frame
 
+
 def imwrite(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, filename):
     cdef bytes filename_bytes = filename.encode()
     cdef const char *c_filename = filename_bytes
@@ -68,7 +71,9 @@ def imwrite(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, filename):
     c_frame.data = &frame[0,0,0]
     c_frame.h = frame.shape[0]
     c_frame.w = frame.shape[1]
+    c_frame.c = 3
     dec.fio_imwrite(c_filename, &c_frame)
+
 
 def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, shape=(-1,-1), mode="bilinear"):
     cdef bytes mode_bytes = mode.encode()
@@ -95,7 +100,8 @@ def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, sh
     c_in.data = &frame[0,0,0]
     c_in.h = frame.shape[0]
     c_in.w = frame.shape[1]
-    
+    c_in.c = 3
+
     dec.imresize(&c_in, &c_out, rows, cols, c_mode)
 
     # convert c buffer to numpy array
@@ -103,8 +109,9 @@ def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, sh
     frame_resized = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
     return frame_resized
 
-def draw_box(np.ndarray[np.uint8_t,ndim=3,mode="c"] im not None, pt1, pt2, color, thickness=1):
-    cdef dec.rgb c_im
+
+def draw_box(im, pt1, pt2, color, thickness=1):
+    cdef dec.rgb c_in
     cdef int x1 = pt1[0]
     cdef int y1 = pt1[1]
     cdef int x2 = pt2[0]
@@ -114,13 +121,71 @@ def draw_box(np.ndarray[np.uint8_t,ndim=3,mode="c"] im not None, pt1, pt2, color
     cdef int b = color[2]
     cdef int t = thickness
 
-    c_im.data = &im[0,0,0]
-    c_im.h = im.shape[0]
-    c_im.w = im.shape[1]
-    
-    dec.draw_box(&c_im,x1,y1,x2,y2,t,r,g,b)
+    cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
+
+    c_in.data = &im_in[0,0,0]
+    c_in.h = im_in.shape[0]
+    c_in.w = im_in.shape[1]
+    c_in.c = 3
+
+    dec.draw_box(&c_in,x1,y1,x2,y2,t,r,g,b)
 
     # convert c buffer to numpy array
-    data_ptr = c.cast(<uintptr_t>c_im.data, c.POINTER(c.c_uint8))
-    im = np.ctypeslib.as_array(data_ptr, shape=(c_im.h,c_im.w,3))
+    data_ptr = c.cast(<uintptr_t>c_in.data, c.POINTER(c.c_uint8))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_in.h,c_in.w,3))
+    return im
+
+
+def rgb2gray(im):
+    TAG = "[rgb2gray]: "
+    if im.ndim != 3:
+        print(TAG+"input image should have 3 dimensions!")
+        return im
+
+    cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
+
+    cdef dec.rgb c_in
+    cdef dec.rgb c_out
+    c_in.data = &im_in[0,0,0]
+    c_in.h = im_in.shape[0]
+    c_in.w = im_in.shape[1]
+    c_in.c = 3
+
+    dec.rgb2gray(&c_in, &c_out);
+
+    # convert c buffer to numpy array
+    data_ptr = c.cast(<uintptr_t>c_out.data, c.POINTER(c.c_uint8))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,1))
+
+    return im
+
+
+def gray2rgb(im):
+    TAG = "[gray2rgb]: "
+    if im.ndim < 2 or im.ndim > 3:
+        print(TAG+"input image should have 2 or 3 dimensions!")
+        return im
+
+    if im.ndim == 2:
+        im = np.expand_dims(im,2)
+    else:
+        if im.shape[2] != 1:
+            print(TAG+"input image cannot have a third dimension with length > 1!")
+            return im
+
+    cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
+
+    cdef dec.rgb c_in
+    cdef dec.rgb c_out
+    c_in.data = &im_in[0,0,0]
+    c_in.h = im_in.shape[0]
+    c_in.w = im_in.shape[1]
+    c_in.c = 1
+
+    dec.gray2rgb(&c_in, &c_out);
+
+    # convert c buffer to numpy array
+    data_ptr = c.cast(<uintptr_t>c_out.data, c.POINTER(c.c_uint8))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
+
     return im

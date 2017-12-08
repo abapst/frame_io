@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Wfatal-errors -pedantic-errors
-LDFLAGS =
+CFLAGS = -g -Wall -Wextra -Wfatal-errors -pedantic-errors -std=gnu99
+LDFLAGS = -lm
 INC=-I./include
 VPATH=src/
 OBJDIR=obj/
@@ -39,4 +39,4 @@ bin:
 
 .PHONY: clean
 clean:
-	rm -rf *.o python/*.so $(BINDIR) $(OBJDIR) core.* *.mp4 *.jpg
+	rm -rf *.o python/*.so $(BINDIR) $(OBJDIR) core.* *.mp4 *.jpg *.png

@@ -19,16 +19,17 @@ int test_imread(const char *image_file)
     return 0;
 }
 
+
 int test_vidread(const char *video_file)
 {
     int cnt = 0;
-    rgb binframe = {0,0,NULL};
+    rgb binframe = {0,0,0,NULL};
     FILE *in = 0;
     FILE *out = 0;
     if ((in = fio_OpenReadStream(video_file,100,100)) == NULL) {
         return -1;
     }
-    
+
     while(fio_ReadFrame(&binframe, in)) {
         fprintf(stderr, "\r(%d)",++cnt);
         if(out == NULL) {
@@ -50,6 +51,7 @@ int test_vidread(const char *video_file)
     return 0;
 }
 
+
 int test_draw_box(const char *image_file)
 {
     rgb im;
@@ -64,9 +66,11 @@ int test_draw_box(const char *image_file)
     if (fio_imwrite("image_out.jpg", &im) < 0) {
         return -1;
     }
+
     free(im.data);
     return 0;
 }
+
 
 int main()
 {

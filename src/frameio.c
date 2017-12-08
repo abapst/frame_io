@@ -3,7 +3,7 @@
 /*
  * Open an input stream from a video or image file using ffmpeg.
  * If rows = -1 or cols = -1, the files are read at their native
- * height/width in the respective dimension, otherwise the frames 
+ * height/width in the respective dimension, otherwise the frames
  * are scaled accordingly.
  */
 FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
@@ -18,12 +18,13 @@ FILE* fio_OpenReadStream(const char* filename, int rows, int cols)
                                    filename,cols,rows);
 
     in = popen(buffer,"r");
-    if (in == NULL){
+    if (in == NULL) {
         fprintf(stderr,"fio_OpenReadStream error\n");
         return NULL;
     }
     return in;
 }
+
 
 /*
  * Open an output stream to a video or image file using ffmpeg.
@@ -50,13 +51,14 @@ FILE* fio_OpenWriteStream(const char* filename,int rows,int cols)
                                    2> /dev/null", \
                                    cols_buffer,rows_buffer,filename);
 
-    out = popen(buffer,"w");   
+    out = popen(buffer,"w");
     if (out == NULL){
         fprintf(stderr,"fio_OpenWriteStream error\n");
         return NULL;
     }
     return out;
 }
+
 
 /* Read exactly one frame from an open ffmpeg stream. Returns -1
  * on error, 1 on success, and 0 if there are no more frames to
@@ -109,10 +111,11 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
 
         return 1;
     }
-    
+
     /* Nothing more to read */
     return 0;
 }
+
 
 /*
  * Write exactly one frame to an ffmpeg output stream.
@@ -133,6 +136,7 @@ int fio_WriteFrame(rgb *binframe, FILE *out)
     return 0;
 }
 
+
 /*
  * Close an ffmpeg input/output stream.
  */
@@ -140,6 +144,7 @@ void fio_close(FILE* fd)
 {
     pclose(fd);
 }
+
 
 /*
  * Read a single image using ffmpeg. The image can be read at native size
@@ -156,6 +161,7 @@ int fio_imread(const char* filename, rgb *binframe, int rows, int cols)
     fio_close(in);
     return 0;
 }
+
 
 /*
  * Write a single image to an output file using ffmpeg.

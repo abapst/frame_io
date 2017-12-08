@@ -17,9 +17,9 @@ int main(int argc, char **argv)
     }
 
     sscanf(imscale,"%f",&scale);
-    
+
     fio_imread(filename,&img,-1,-1);
-    imresize(&img, &resized, scale*img.h, scale*img.w, alg); 
+    imresize(&img, &resized, scale*img.h, scale*img.w, alg);
     fio_imwrite("output.png",&resized);
 
     free(img.data);

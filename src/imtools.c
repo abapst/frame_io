@@ -27,14 +27,15 @@ void imresize(rgb *input, rgb *output, int hout, int wout, const char *alg)
     }
 }
 
-/* 
+
+/*
  * Image resizing using bilinear interpolation
  */
 void imresize_bilinear(rgb *input, rgb *output, int hout, int wout)
 {
     int ii, jj, kk, x, y, a, b, c, d, index, val;
     int hin = input->h;
-    int win = input->w; 
+    int win = input->w;
 
     float x_ratio = (float)(win-1)/wout;
     float y_ratio = (float)(hin-1)/hout;
@@ -54,9 +55,9 @@ void imresize_bilinear(rgb *input, rgb *output, int hout, int wout)
                 c = input->data[index+NCHANNELS*win];
                 d = input->data[index+NCHANNELS*win+NCHANNELS];
 
-                val = (int)(a*(1-x_diff)*(1-y_diff) + 
+                val = (int)(a*(1-x_diff)*(1-y_diff) +
                             b*(x_diff)*(1-y_diff) +
-                            c*(y_diff)*(1-x_diff) + 
+                            c*(y_diff)*(1-x_diff) +
                             d*(x_diff*y_diff));
 
                 output->data[ii*wout*NCHANNELS+jj*NCHANNELS+kk] = val;
@@ -64,6 +65,7 @@ void imresize_bilinear(rgb *input, rgb *output, int hout, int wout)
         }
     }
 }
+
 
 /*
  * Image resizing using nearest-neighbor interpolation
@@ -89,4 +91,70 @@ void imresize_nearest(rgb *input, rgb *output, int hout, int wout)
             output->data[idx_out+2] = input->data[idx_in+2];
         }
     }
+}
+
+
+int rgb2gray(rgb *input, rgb *output)
+{
+    if (input == NULL || output == NULL) {
+        return -1;
+    }
+
+    if (input->c != 3) {
+        return -1;
+    }
+
+    int nrows = input->h;
+    int ncols = input->w;
+
+    output->h = nrows;
+    output->w = ncols;
+    output->c = 1;
+    output->data = malloc(nrows*ncols);
+
+    float avg = 0.;
+    int i,j;
+    for (i = 0; i < nrows; i++) {
+        for (j = 0; j < ncols; j++) {
+            int idx = ncols*i*NCHANNELS + j*NCHANNELS;
+            avg = (input->data[idx] +
+                   input->data[idx + 1]+
+                   input->data[idx + 2])/3;
+            avg = roundf(avg);
+            output->data[ncols*i + j] = (unsigned char)avg;
+        }
+    }
+    return 0;
+}
+
+
+int gray2rgb(rgb *input, rgb *output)
+{
+    if (input == NULL || output == NULL) {
+        return -1;
+    }
+
+    if (input->c != 1) {
+        return -1;
+    }
+
+    int nrows = input->h;
+    int ncols = input->w;
+
+    output->h = nrows;
+    output->w = ncols;
+    output->c = 3;
+    output->data = malloc(nrows*ncols*3);
+
+    int i,j;
+    for (i = 0; i < nrows; i++) {
+        for (j = 0; j < ncols; j++) {
+            unsigned char val = input->data[ncols*i + j];
+            int idx = ncols*i*NCHANNELS + j*NCHANNELS;
+            output->data[idx] = val;
+            output->data[idx + 1] = val;
+            output->data[idx + 2] = val;
+        }
+    }
+    return 0;
 }

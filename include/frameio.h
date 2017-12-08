@@ -1,19 +1,14 @@
 #ifndef FRAMEIO_H
 #define FRAMEIO_H
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
-#define NCHANNELS 3
+#include "image.h"
 
-typedef struct _rgb
-{
-    int w;
-    int h;
-    unsigned char *data;
-} rgb;
+#define NCHANNELS 3
 
 /* Function declarations */
 FILE* fio_OpenReadStream(const char *filename,int rows, int cols);
