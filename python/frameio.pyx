@@ -64,13 +64,20 @@ def imread(filename, shape=(-1,-1)):
     return frame
 
 
-def imwrite(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, filename):
+def imwrite(frame, filename):
+
+    if frame.ndim != 3 or frame.shape[2] == 1:
+        print("[ERROR] imwrite: image dimensions should be h x w x 3!")
+        return
+
+    cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(frame, dtype=np.uint8)
+
     cdef bytes filename_bytes = filename.encode()
     cdef const char *c_filename = filename_bytes
     cdef dec.rgb c_frame
-    c_frame.data = &frame[0,0,0]
-    c_frame.h = frame.shape[0]
-    c_frame.w = frame.shape[1]
+    c_frame.data = &im_in[0,0,0]
+    c_frame.h = im_in.shape[0]
+    c_frame.w = im_in.shape[1]
     c_frame.c = 3
     dec.fio_imwrite(c_filename, &c_frame)
 
@@ -137,9 +144,8 @@ def draw_box(im, pt1, pt2, color, thickness=1):
 
 
 def rgb2gray(im):
-    TAG = "[rgb2gray]: "
     if im.ndim != 3:
-        print(TAG+"input image should have 3 dimensions!")
+        print("[ERROR] rgb2gray: input image should have 3 dimensions!")
         return im
 
     cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
@@ -161,16 +167,15 @@ def rgb2gray(im):
 
 
 def gray2rgb(im):
-    TAG = "[gray2rgb]: "
     if im.ndim < 2 or im.ndim > 3:
-        print(TAG+"input image should have 2 or 3 dimensions!")
+        print("[ERROR] gray2rgb: input image should have 2 or 3 dimensions!")
         return im
 
     if im.ndim == 2:
         im = np.expand_dims(im,2)
     else:
         if im.shape[2] != 1:
-            print(TAG+"input image cannot have a third dimension with length > 1!")
+            print("[ERROR] gray2rgb: input image cannot have a third dimension with length > 1!")
             return im
 
     cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)

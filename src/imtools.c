@@ -1,3 +1,4 @@
+#include "image.h"
 #include "imtools.h"
 
 /*
@@ -10,9 +11,7 @@ void imresize(rgb *input, rgb *output, int hout, int wout, const char *alg)
         exit(-1);
     }
 
-    output->h = hout;
-    output->w = wout;
-    output->data = malloc(wout*hout*NCHANNELS);
+    image_alloc(output, hout, wout, 3);
 
     /* Just copy the image if the size doesn't change */
     if (hout == input->h && wout == input->w) {
@@ -107,10 +106,7 @@ int rgb2gray(rgb *input, rgb *output)
     int nrows = input->h;
     int ncols = input->w;
 
-    output->h = nrows;
-    output->w = ncols;
-    output->c = 1;
-    output->data = malloc(nrows*ncols);
+    image_alloc(output, nrows, ncols, 1);
 
     float avg = 0.;
     int i,j;
@@ -141,10 +137,7 @@ int gray2rgb(rgb *input, rgb *output)
     int nrows = input->h;
     int ncols = input->w;
 
-    output->h = nrows;
-    output->w = ncols;
-    output->c = 3;
-    output->data = malloc(nrows*ncols*3);
+    image_alloc(output, nrows, ncols, 3);
 
     int i,j;
     for (i = 0; i < nrows; i++) {
@@ -156,5 +149,33 @@ int gray2rgb(rgb *input, rgb *output)
             output->data[idx + 2] = val;
         }
     }
+    return 0;
+}
+
+int imhisteq(rgb *input, rgb *output)
+{
+    if (input == NULL || output == NULL) {
+        return -1;
+    }
+
+    if (input->c != 1) {
+        return -1;
+    }
+
+    long long hist = malloc(GRAYLEVEL_8BIT*sizeof(long long));
+
+    int nrows = input->h;
+    int ncols = input->w;
+    image_alloc(output, nrows, ncols, 1);
+
+    int i,j;
+    for (i = 0; i < nrows; i++) {
+        for (j = 0; j < ncols; j++) {
+            int idx = ncols*i + j;
+            
+        }
+    }
+
+    free(hist);
     return 0;
 }

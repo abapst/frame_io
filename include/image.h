@@ -9,4 +9,6 @@ typedef struct _rgb
     unsigned char *data;
 } rgb;
 
+void image_alloc(rgb *image, int h, int w, int c);
+
 #endif
