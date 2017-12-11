@@ -211,6 +211,6 @@ def equalizeHist(im):
 
     # convert c buffer to numpy array
     data_ptr = c.cast(<uintptr_t>c_out.data, c.POINTER(c.c_uint8))
-    im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,1))
 
     return im

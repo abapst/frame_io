@@ -164,31 +164,45 @@ int equalizeHist(rgb *input, rgb *output)
     }
 
     int i,j,idx;
-    long long *hist = malloc(GRAYLEVEL_8BIT*sizeof(long long));
-    for (i = 0; i < GRAYLEVEL_8BIT; i++) {
-        hist[i] = 0;
-    }
+    unsigned long long *hist = calloc(GRAYLEVEL_8BIT,sizeof(unsigned long long));
 
     int nrows = input->h;
     int ncols = input->w;
     image_alloc(output, nrows, ncols, 1);
 
+    /* Compute un-normalized histogram */
     for (i = 0; i < nrows; i++) {
         for (j = 0; j < ncols; j++) {
             idx = ncols*i + j;
-            hist[input->data[idx]] += 1;
+            hist[input->data[idx]]++;
         }
     }
 
-    float val;
+    /* Compute CDF of histogram */
+    double *cdf = malloc(GRAYLEVEL_8BIT*sizeof(double));
+    cdf[0] = 255*(double)hist[0]/(nrows*ncols);
+    for (i = 0; i < GRAYLEVEL_8BIT; i++) {
+        cdf[i] = 255*(double)hist[i]/(nrows*ncols) + cdf[i-1];
+    }
+
+    double cdfmin = 0; // minimum nonzero cdf value
+    for (i = 0; i < GRAYLEVEL_8BIT; i++) {
+        if (cdf[i] > 0) {
+            cdfmin = cdf[i];
+            break;
+        }
+    }
+
+    double val;
     for (i = 0; i < nrows; i++) {
         for (j = 0; j < ncols; j++) {
             idx = ncols*i + j;
-            val = floorf(255*(hist[input->data[idx]]/(nrows*ncols)));
+            val = roundf(cdf[input->data[idx]]-cdfmin);
             output->data[idx] = (unsigned char)val;
         }
     }
 
     free(hist);
+    free(cdf);
     return 0;
 }
