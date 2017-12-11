@@ -1,6 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include <stdlib.h>
+
 typedef struct _rgb
 {
     int w;

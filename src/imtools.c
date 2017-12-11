@@ -152,7 +152,8 @@ int gray2rgb(rgb *input, rgb *output)
     return 0;
 }
 
-int imhisteq(rgb *input, rgb *output)
+
+int equalizeHist(rgb *input, rgb *output)
 {
     if (input == NULL || output == NULL) {
         return -1;
@@ -162,17 +163,29 @@ int imhisteq(rgb *input, rgb *output)
         return -1;
     }
 
-    long long hist = malloc(GRAYLEVEL_8BIT*sizeof(long long));
+    int i,j,idx;
+    long long *hist = malloc(GRAYLEVEL_8BIT*sizeof(long long));
+    for (i = 0; i < GRAYLEVEL_8BIT; i++) {
+        hist[i] = 0;
+    }
 
     int nrows = input->h;
     int ncols = input->w;
     image_alloc(output, nrows, ncols, 1);
 
-    int i,j;
     for (i = 0; i < nrows; i++) {
         for (j = 0; j < ncols; j++) {
-            int idx = ncols*i + j;
-            
+            idx = ncols*i + j;
+            hist[input->data[idx]] += 1;
+        }
+    }
+
+    float val;
+    for (i = 0; i < nrows; i++) {
+        for (j = 0; j < ncols; j++) {
+            idx = ncols*i + j;
+            val = floorf(255*(hist[input->data[idx]]/(nrows*ncols)));
+            output->data[idx] = (unsigned char)val;
         }
     }
 

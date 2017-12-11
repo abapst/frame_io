@@ -194,3 +194,23 @@ def gray2rgb(im):
     im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
 
     return im
+
+
+def equalizeHist(im):
+
+    cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
+
+    cdef dec.rgb c_in
+    cdef dec.rgb c_out
+    c_in.data = &im_in[0,0,0]
+    c_in.h = im_in.shape[0]
+    c_in.w = im_in.shape[1]
+    c_in.c = 1
+
+    dec.equalizeHist(&c_in, &c_out);
+
+    # convert c buffer to numpy array
+    data_ptr = c.cast(<uintptr_t>c_out.data, c.POINTER(c.c_uint8))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
+
+    return im

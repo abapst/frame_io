@@ -15,6 +15,7 @@ OBJ = \
       frameio.o\
       imtools.o\
       draw.o\
+      image.o\
 
 EXECS=$(addprefix $(BINDIR), $(EXEC))
 OBJS=$(addprefix $(OBJDIR), $(OBJ))

@@ -13,6 +13,6 @@ void imresize_bilinear(rgb *input, rgb *output, int hout, int wout);
 int rgb2gray(rgb *input, rgb *output);
 int gray2rgb(rgb *input, rgb *output);
 
-int imhisteq(rgb *input, rgb *output);
+int equalizeHist(rgb *input, rgb *output);
 
 #endif

@@ -25,6 +25,10 @@ cdef extern from "../include/imtools.h":
     void imresize(rgb *c_input, rgb *c_output, int hout, int wout, const char *alg);
     int rgb2gray(rgb *c_input, rgb *c_output);
     int gray2rgb(rgb *c_input, rgb *c_output);
+    int equalizeHist(rgb *c_input, rgb *c_output);
 
 cdef extern from "../include/draw.h":
     void draw_box(rgb *im, int x1, int y1, int x2, int y2, int thickness, int r,int g, int b);
+
+cdef extern from "../include/image.h":
+    void image_alloc(rgb *image, int h, int w, int c);
