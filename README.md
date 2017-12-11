@@ -7,25 +7,20 @@ The motivation behind this library was to avoid the hassle of having to install 
 ## Python Wrapper
 
 There is also a python wrapper available. Available methods include:
+```
 class VideoReader
-    >>.open(fname, mode={'r','w'},shape=(-1,-1))
-    >>.close()
-    >>.readframe()
-    >>.writeframe(frame)
-
+    .open(fname, mode={'r','w'},shape=(-1,-1))
+    .close()
+    .readframe()
+    .writeframe(frame)
 imread(fname,shape=(-1,-1))
-
 imwrite(frame,fname)
-
 imresize(frame,scale=-1,shape=(-1,-1),mode={'nearest','bilinear'})
-
 draw_box(frame,topleft,bottomright,color,thickness=1)
-
 rgb2gray(frame)
-
 gray2rgb(frame)
-
 equalizeHist(im)
+```
 
 ## Installation instructions
 
