@@ -22,8 +22,7 @@ gray2rgb(frame)
 equalizeHist(im)
 ```
 
-## Installation instructions
-
+## Installation
 Install prerequisites:
 ```
 sudo apt-get install ffmpeg
