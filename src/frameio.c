@@ -72,7 +72,6 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
 
     /* Read exactly one PPM formatted frame from input pipe */
     while(fgets(string,80,in) != NULL) {
-        /* Read image header */
         if(strncmp(string, "P6\n", 3)) {
             fprintf(stderr, "fio_ReadFrame: Incorrect PPM magic number.\n");
             fprintf(stderr, "String was: %s", string);
@@ -91,7 +90,6 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             return -1;
         }
 
-        /* Allocate frame data if this is the first frame */
         if(binframe->data == NULL) {
             binframe->data = (unsigned char *)malloc(width*height*3);
             binframe->w = width;
@@ -102,7 +100,6 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
             }
         }
 
-        /* Read frame */
         nbytes = fread(binframe->data, sizeof(unsigned char), height*width*3, in);
         if ((int)nbytes < height*width*3) {
             fprintf(stderr, "fio_ReadFrame: fread error.\n");
@@ -112,7 +109,6 @@ int fio_ReadFrame(rgb *binframe, FILE *in)
         return 1;
     }
 
-    /* Nothing more to read */
     return 0;
 }
 

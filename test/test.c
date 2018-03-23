@@ -43,11 +43,9 @@ int test_vidread(const char *video_file)
     }
     fprintf(stderr, "\r\r");
 
-    /* Cleanup */
     free(binframe.data);
     fio_close(in);
     fio_close(out);
-
     return 0;
 }
 

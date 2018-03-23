@@ -13,7 +13,6 @@ void imresize(rgb *input, rgb *output, int hout, int wout, const char *alg)
 
     image_alloc(output, hout, wout, 3);
 
-    /* Just copy the image if the size doesn't change */
     if (hout == input->h && wout == input->w) {
         memcpy(output->data,input->data,input->h*input->w*NCHANNELS);
     }
@@ -170,7 +169,6 @@ int equalizeHist(rgb *input, rgb *output)
     int ncols = input->w;
     image_alloc(output, nrows, ncols, 1);
 
-    /* Compute un-normalized histogram */
     for (i = 0; i < nrows; i++) {
         for (j = 0; j < ncols; j++) {
             idx = ncols*i + j;
@@ -178,14 +176,13 @@ int equalizeHist(rgb *input, rgb *output)
         }
     }
 
-    /* Compute CDF of histogram */
     double *cdf = malloc(GRAYLEVEL_8BIT*sizeof(double));
     cdf[0] = 255*(double)hist[0]/(nrows*ncols);
     for (i = 0; i < GRAYLEVEL_8BIT; i++) {
         cdf[i] = 255*(double)hist[i]/(nrows*ncols) + cdf[i-1];
     }
 
-    double cdfmin = 0; // minimum nonzero cdf value
+    double cdfmin = 0;
     for (i = 0; i < GRAYLEVEL_8BIT; i++) {
         if (cdf[i] > 0) {
             cdfmin = cdf[i];

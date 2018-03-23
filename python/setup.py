@@ -33,18 +33,14 @@ if "cleanall" in args:
     subprocess.Popen("rm -rf *.c", shell=True, executable="/bin/bash")
     subprocess.Popen("rm -rf *.so", shell=True, executable="/bin/bash")
 
-    # now do a normal clean
     sys.argv[1] = "clean"
 
 ext_modules = [Extension(
     name="frameio",
     sources=["frameio.pyx", "../src/frameio.c", "../src/imtools.c", "../src/draw.c", "../src/image.c"],
-        # extra_objects=["fc.o"],  # if you compile fc.cpp separately
-    include_dirs = [numpy.get_include()],  # .../site-packages/numpy/core/include
+    include_dirs = [numpy.get_include()],
     language="c",
-        # libraries=
         extra_compile_args = "-Wno-cpp -I../include".split()
-        # extra_link_args = "...".split()
     )]
 
 setup(
@@ -52,5 +48,3 @@ setup(
     cmdclass = {'build_ext': build_ext},
     ext_modules = ext_modules,
     )
-
-# test: import f

@@ -10,7 +10,6 @@
 
 #define NCHANNELS 3
 
-/* Function declarations */
 FILE* fio_OpenReadStream(const char *filename,int rows, int cols);
 FILE* fio_OpenWriteStream(const char* filename,int rows,int cols);
 
