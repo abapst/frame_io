@@ -3,11 +3,11 @@ from libc.stdio cimport *
 from libc.stdint cimport uintptr_t
 
 import ctypes as c
+import os
+import errno
 import numpy as np
 cimport numpy as np
-
 cimport declarations as dec
-
 
 cdef class VideoReader:
 
@@ -53,6 +53,12 @@ cdef class VideoReader:
         dec.fio_WriteFrame(&c_frame, self.fout)
 
 def imread(filename, shape=(-1,-1)):
+    try:
+        f = open(filename)
+        f.close()
+    except:
+        raise
+
     cdef bytes filename_bytes = filename.encode()
     cdef const char *c_filename = filename_bytes
     cdef dec.rgb c_frame
