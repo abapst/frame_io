@@ -6,6 +6,7 @@ import ctypes as c
 import os
 import errno
 import numpy as np
+import colorspace
 cimport numpy as np
 cimport declarations as dec
 

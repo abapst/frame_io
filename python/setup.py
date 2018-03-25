@@ -37,7 +37,11 @@ if "cleanall" in args:
 
 ext_modules = [Extension(
     name="frameio",
-    sources=["frameio.pyx", "../src/frameio.c", "../src/imtools.c", "../src/draw.c", "../src/image.c"],
+    sources=["frameio.pyx",
+             "../src/frameio.c",
+             "../src/imtools.c",
+             "../src/draw.c",
+             "../src/image.c"],
     include_dirs = [numpy.get_include()],
     language="c",
         extra_compile_args = "-Wno-cpp -I../include".split()
