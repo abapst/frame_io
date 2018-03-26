@@ -55,3 +55,10 @@ img = fio.imread('../test/bear.jpg')
 im_resized = fio.imresize(img, scale=2, mode='bilinear')
 fio.imwrite(im_resized, 'bear_resized.jpg')
 ```
+
+##Support
+Questions or suggestions are greatly appreciated. If you spot a mistake in this repo, please file an issue:
+
+```
+https://github.com/abapst/frameio
+```
