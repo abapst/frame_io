@@ -150,6 +150,30 @@ def draw_box(im, pt1, pt2, color, thickness=1):
     return im
 
 
+def draw_marker(im, pt, color, size=1):
+    cdef dec.rgb c_in
+    cdef int x = pt[0]
+    cdef int y = pt[1]
+    cdef int r = color[0]
+    cdef int g = color[1]
+    cdef int b = color[2]
+    cdef int t = size
+
+    cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
+
+    c_in.data = &im_in[0,0,0]
+    c_in.h = im_in.shape[0]
+    c_in.w = im_in.shape[1]
+    c_in.c = 3
+
+    dec.draw_marker(&c_in,x,y,t,r,g,b)
+
+    # convert c buffer to numpy array
+    data_ptr = c.cast(<uintptr_t>c_in.data, c.POINTER(c.c_uint8))
+    im = np.ctypeslib.as_array(data_ptr, shape=(c_in.h,c_in.w,3))
+    return im
+
+
 def rgb2gray(im):
     if im.ndim != 3:
         print("[ERROR] rgb2gray: input image should have 3 dimensions!")

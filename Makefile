@@ -40,4 +40,4 @@ bin:
 
 .PHONY: clean
 clean:
-	rm -rf *.o python/*.so $(BINDIR) $(OBJDIR) core.* *.mp4 *.jpg *.png
+	rm -rf *.o python/*.so python/*.pyc python/__pycache__ $(BINDIR) $(OBJDIR) core.* *.mp4 *.jpg *.png
