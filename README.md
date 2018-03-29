@@ -22,7 +22,7 @@ class VideoReader
 .gray2rgb(img)
 .rgb2yuv(img)
 .yuv2rgb(img)
-equalizeHist(img)
+.equalizeHist(img)
 ```
 
 ## Installation
@@ -62,5 +62,5 @@ fio.imwrite(im_resized, 'bear_resized.jpg')
 Questions or suggestions are greatly appreciated. If you spot a mistake in this repo, please file an issue:
 
 ```
-https://github.com/abapst/frameio
+https://github.com/abapst/frame_io
 ```
