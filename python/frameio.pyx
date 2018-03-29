@@ -6,7 +6,6 @@ import ctypes as c
 import os
 import errno
 import numpy as np
-import colorspace
 cimport numpy as np
 cimport declarations as dec
 
@@ -70,7 +69,6 @@ def imread(filename, shape=(-1,-1)):
     frame = np.ctypeslib.as_array(data_ptr, shape=(c_frame.h,c_frame.w,3))
     return frame
 
-
 def imwrite(frame, filename):
 
     if frame.ndim != 3 or frame.shape[2] == 1:
@@ -87,7 +85,6 @@ def imwrite(frame, filename):
     c_frame.w = im_in.shape[1]
     c_frame.c = 3
     dec.fio_imwrite(c_filename, &c_frame)
-
 
 def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, shape=(-1,-1), mode="bilinear"):
     cdef bytes mode_bytes = mode.encode()
@@ -123,7 +120,6 @@ def imresize(np.ndarray[np.uint8_t,ndim=3,mode="c"] frame not None, scale=-1, sh
     frame_resized = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,3))
     return frame_resized
 
-
 def draw_box(im, pt1, pt2, color, thickness=1):
     cdef dec.rgb c_in
     cdef int x1 = pt1[0]
@@ -149,7 +145,6 @@ def draw_box(im, pt1, pt2, color, thickness=1):
     im = np.ctypeslib.as_array(data_ptr, shape=(c_in.h,c_in.w,3))
     return im
 
-
 def draw_marker(im, pt, color, size=1):
     cdef dec.rgb c_in
     cdef int x = pt[0]
@@ -173,7 +168,6 @@ def draw_marker(im, pt, color, size=1):
     im = np.ctypeslib.as_array(data_ptr, shape=(c_in.h,c_in.w,3))
     return im
 
-
 def rgb2gray(im):
     if im.ndim != 3:
         print("[ERROR] rgb2gray: input image should have 3 dimensions!")
@@ -195,7 +189,6 @@ def rgb2gray(im):
     im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,1))
 
     return im
-
 
 def gray2rgb(im):
     if im.ndim < 2 or im.ndim > 3:
@@ -226,7 +219,6 @@ def gray2rgb(im):
 
     return im
 
-
 def equalizeHist(im):
 
     cdef np.ndarray[np.uint8_t,ndim=3,mode="c"] im_in = np.ascontiguousarray(im, dtype=np.uint8)
@@ -245,3 +237,21 @@ def equalizeHist(im):
     im = np.ctypeslib.as_array(data_ptr, shape=(c_out.h,c_out.w,1))
 
     return im
+
+def rgb2yuv(rgb):
+
+    yuv = np.empty_like(rgb)
+    xform = np.array([[.299, .587, .114], [-.1687, -.3313, .5], [.5, -.4187, -.0813]])
+    yuv = rgb.dot(xform.T)
+    yuv[:,:,[1,2]] += 128
+
+    return yuv
+
+def yuv2rgb(yuv):
+
+    rgb = np.empty_like(yuv)
+    xform = np.array([[1, 0, 1.402], [1, -0.34414, -.71414], [1, 1.772, 0]])
+    yuv[:,:,[1,2]] -= 128
+    rgb = yuv.dot(xform.T)
+
+    return rgb

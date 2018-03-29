@@ -9,18 +9,20 @@ The motivation behind this library was to avoid the hassle of having to install 
 There is also a python wrapper available. Available methods include:
 ```
 class VideoReader
-    .open(fname, mode={'r','w'},shape=(-1,-1))
+    .open(filename, mode={'r','w'}, shape=(-1,-1))
     .close()
     .readframe()
-    .writeframe(frame)
-imread(fname,shape=(-1,-1))
-imwrite(frame,fname)
-imresize(frame,scale=-1,shape=(-1,-1),mode={'nearest','bilinear'})
-draw_box(frame,topleft,bottomright,color,thickness=1)
-draw_marker(frame,point,color,thickness=1)
-rgb2gray(frame)
-gray2rgb(frame)
-equalizeHist(im)
+    .writeframe(img)
+.imread(filename, shape=(-1,-1))
+.imwrite(img, filename)
+.imresize(img, scale=-1, shape=(-1,-1), mode={'nearest','bilinear'})
+.draw_box(img, topleft, bottomright, color,thickness=1)
+.draw_marker(img, point, color, thickness=1)
+.rgb2gray(img)
+.gray2rgb(img)
+.rgb2yuv(img)
+.yuv2rgb(img)
+equalizeHist(img)
 ```
 
 ## Installation
