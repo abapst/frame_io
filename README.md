@@ -2,7 +2,7 @@
 
 Simple library for doing common image processing tasks like reading/writing video and images, and image resizing. This is a work in progress and I add to it whenever I feel like it.
 
-The motivation behind this library was to avoid the hassle of having to install and compile OpenCV to do relatively simple and common image processing tasks. The goal is to provide a simple API and easy inclusion into existing projects. The only requirement is ffmpeg, for reading and writing image and video codecs.
+The motivation behind this library was to avoid the hassle of having to install and compile OpenCV to do relatively simple and common image processing tasks. The goal is to provide the simplest possible API and easy inclusion into existing projects. The only requirement is ffmpeg, for reading and writing image and video codecs.
 
 ## Python Wrapper
 
